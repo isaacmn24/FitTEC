@@ -181,45 +181,43 @@ void loop() {
     Serial.print("BPM: ");                        // Print phrase "BPM: " 
     Serial.println(myBPM);                        // Print the value inside of myBPM. 
   }
-  //float porcentajeBPM = float(myBPM)/float(maxBPM);
-  float porcentajeBPM = 0.5;
+  float porcentajeBPM = float(myBPM)/float(maxBPM);
   int rangoBPM;
-  if(porcentajeBPM < 0.2) {
-   rangoBPM = 1;
-   alarma = 1;
-  }
-  else if(porcentajeBPM < 0.6) {
-   rangoBPM = 1; 
-  }
-  else if(porcentajeBPM < 0.7) {
-   rangoBPM = 2; 
-  }
-  else if(porcentajeBPM < 0.8) {
-   rangoBPM = 5; 
-  }
-  else if(porcentajeBPM < 0.9) {
-   rangoBPM = 4; 
-  }
-  else if(porcentajeBPM < 1) {
+  if(porcentajeBPM < 1) {
    rangoBPM = 5;
   }
-  else {
+  if(porcentajeBPM < 0.9) {
+   rangoBPM = 4; 
+  }
+  if(porcentajeBPM < 0.8) {
+   rangoBPM = 3; 
+  }
+  if(porcentajeBPM < 0.7) {
+   rangoBPM = 2; 
+  }
+  if(porcentajeBPM < 0.6) {
+   rangoBPM = 1; 
+  }
+  if(porcentajeBPM > 1) {
    rangoBPM = 6; 
    alarma = 1;
   }
-  if(temperaturaC > maxTemp & temperaturaC < 35) {
+  if (temperaturaC > maxTemp) {
     alarma = 1;
   }
-
+  Serial.println(porcentajeBPM);
   // BLUETOOTH
   String txValue = "";
+  String noConectado = txValue+temperaturaC+","+myBPM+","+rangoBPM+","+alarma; // This could be an actual sensor reading!
+  Serial.println("No conectado :(");
+  Serial.println(noConectado);
+  Serial.println("");
   if (deviceConnected) {
     // Fabricate some arbitrary junk for now...
     txValue = txValue+temperaturaC+","+myBPM+","+rangoBPM+","+alarma; // This could be an actual sensor reading!
-
     // Let's convert the value to a char array:
-    char txString[12]; // make sure this is big enuffz
-    txValue.toCharArray(txString, 12);
+    char txString[txValue.length()+1]; // make sure this is big enuffz
+    txValue.toCharArray(txString, txValue.length()+1);
     
     pCharacteristic->setValue(txString);
     
